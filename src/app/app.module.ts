@@ -3,19 +3,24 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { AppStartupComponent } from './app-startup/app-startup.component';
+
 import { NavigationComponent } from './navigation/navigation.component';
-import { HomeComponent } from './home/home.component';
+
+import { ConnectComponent } from './connect/connect.component';
+
+import { TextTransferComponent } from './text-transfer/text-transfer.component';
+import {TransferModule} from './transfer/transfer.module';
 
 @NgModule({
   declarations: [
     AppComponent,
-    AppStartupComponent,
     NavigationComponent,
-    HomeComponent
+    ConnectComponent
+
   ],
   imports: [
     BrowserModule,
+    TransferModule,
     AppRoutingModule
   ],
   providers: [],

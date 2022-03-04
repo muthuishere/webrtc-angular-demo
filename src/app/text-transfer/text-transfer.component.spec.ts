@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AppStartupComponent } from './app-startup.component';
+import { TextTransferComponent } from './text-transfer.component';
 
-describe('AppStartupComponent', () => {
-  let component: AppStartupComponent;
-  let fixture: ComponentFixture<AppStartupComponent>;
+describe('TextTransferComponent', () => {
+  let component: TextTransferComponent;
+  let fixture: ComponentFixture<TextTransferComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ AppStartupComponent ]
+      declarations: [ TextTransferComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AppStartupComponent);
+    fixture = TestBed.createComponent(TextTransferComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

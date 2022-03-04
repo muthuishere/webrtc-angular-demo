@@ -16,8 +16,9 @@ export class NavigationComponent implements OnInit {
 
     console.log(this.router.url);
     this.links=[
-      {label:'Home',path:'/home'},
-      {label:'Login',path:'/login'},
+      {label:'Connect',path:'/connect'},
+      {label:'Transfer Text',path:'/transfer/text'},
+
     ]
   }
   //
