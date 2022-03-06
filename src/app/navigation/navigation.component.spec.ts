@@ -19,7 +19,7 @@ describe('NavigationComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should createConnection', () => {
     expect(component).toBeTruthy();
   });
 });

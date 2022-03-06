@@ -7,9 +7,10 @@
   />
   <span>Webrtc Angular Demo</span>
   <div class="spacer"></div>
+
   <div class="topnav"  >
 
-      <a    *ngFor="let link of links"  [routerLink]="link.path" routerLinkActive="active"    [routerLinkActiveOptions]="{ exact: true }"  >{{link.label}}</a>
+      <a    *ngFor="let link of links$ | async"  [routerLink]="link.path" routerLinkActive="active"    [routerLinkActiveOptions]="{ exact: true }"  >{{link.label}}</a>
 
 
 

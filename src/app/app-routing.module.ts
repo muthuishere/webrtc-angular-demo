@@ -2,12 +2,14 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import {ConnectComponent} from './connect/connect.component';
+import {JoinComponent} from './join/join.component';
 
-import {TextTransferComponent} from './text-transfer/text-transfer.component';
+
 
 const routes: Routes = [
   {path: '', redirectTo: 'connect', pathMatch: 'full',},
-  {path: 'connect',component: ConnectComponent},
+  {path: 'connect',component: ConnectComponent,},
+  {path: 'join',component: JoinComponent,},
 ];
 
 @NgModule({

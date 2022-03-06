@@ -8,20 +8,26 @@ import { NavigationComponent } from './navigation/navigation.component';
 
 import { ConnectComponent } from './connect/connect.component';
 
-import { TextTransferComponent } from './text-transfer/text-transfer.component';
 import {TransferModule} from './transfer/transfer.module';
+import {configReducer} from './shared/config.reducer';
+import {StoreModule} from '@ngrx/store';
+import { JoinComponent } from './join/join.component';
+import {ReactiveFormsModule} from '@angular/forms';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavigationComponent,
-    ConnectComponent
+    ConnectComponent,
+    JoinComponent
 
   ],
   imports: [
     BrowserModule,
+    StoreModule.forRoot({config: configReducer}),
     TransferModule,
-    AppRoutingModule
+    AppRoutingModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

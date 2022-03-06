@@ -1,5 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
+import {Observable} from 'rxjs';
+import {Store} from '@ngrx/store';
+import {map} from 'rxjs/operators';
 
 @Component({
   selector: 'app-navigation',
@@ -9,18 +12,35 @@ import {Router} from '@angular/router';
 export class NavigationComponent implements OnInit {
 
 
-  links;
-  constructor(private router: Router) { }
+  authLinks = [
+    {label: 'Transfer Text', path: '/transfer/text'},
+
+  ];
+  nonAuthLinks = [
+    {label: 'Create Connection', path: '/connect'},
+    {label: 'Join a Connection', path: '/joinForText'},
+  ];
+
+  links$: Observable<any>;
+
+
+  constructor(private router: Router, private store: Store<{ config: any }>) {
+
+    const linksBasedOnConnection = (connected) => connected ? this.authLinks : this.nonAuthLinks;
+
+    this.links$ = store.select('config').pipe(
+      map(config => config.connected),
+      map(linksBasedOnConnection),
+    );
+
+
+  }
 
   ngOnInit(): void {
 
-    console.log(this.router.url);
-    this.links=[
-      {label:'Connect',path:'/connect'},
-      {label:'Transfer Text',path:'/transfer/text'},
 
-    ]
   }
+
   //
   // isActive(instruction: any[]): boolean {
   //   return this.router.isRouteActive(this.router.generate(instruction));

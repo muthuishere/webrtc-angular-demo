@@ -1,0 +1,45 @@
+
+<form [formGroup]="connectionForm" (ngSubmit)="onFormSubmit()">
+
+
+  <div class="mb-3">
+
+
+
+    <textarea class="form-control" rows="5" formControlName="offer" ></textarea>
+
+
+  </div>
+
+  <div class="mb-3">
+
+
+    <button  class="btn btn-primary" (click)="onAcceptOffer()">Accept Offer</button>
+
+
+
+  </div>
+
+  <div class="mb-3">
+    <button  class="btn btn-primary pull-right" (click)="createAnswer()">Create Answer</button>
+  </div>
+  <div class="mb-3">
+
+    <textarea class="form-control" rows="5" formControlName="answer" readonly="true"></textarea>
+
+  </div>
+
+
+  <div class="mb-3">
+
+    <input type="text" class="form-control" formControlName="message" placeholder="send message">
+
+    <textarea class="form-control" rows="5" formControlName="roomlogs"></textarea>
+
+  </div>
+  <div class="mb-3">
+    <button  class="btn btn-primary pull-right" (click)="sendMessage()">Send</button>
+  </div>
+
+</form>
+
