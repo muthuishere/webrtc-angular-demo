@@ -7,6 +7,7 @@ import {WebrtcService} from '../shared/webrtc.service';
 import {Connection} from '../shared/Connection';
 import {Observable, of} from 'rxjs';
 import {tap} from 'rxjs/operators';
+import {WebrtcConfigService} from '../shared/webrtc-config.service';
 
 @Component({
   selector: 'app-connect',
@@ -19,11 +20,12 @@ export class ConnectComponent implements OnInit {
   // constructor(private router: Router, private webrtcService: WebrtcService, public formBuilder: FormBuilder, private store: Store<{ config: any }>) {
   // }
 
-  constructor(private router: Router, private webrtcService: WebrtcService, public formBuilder: FormBuilder) {
+  constructor(private router: Router, private webrtcService: WebrtcService, private webrtcConfigService: WebrtcConfigService, public formBuilder: FormBuilder, private store: Store<{ config: any }>) {
   }
   connectionForm;
   connection: Connection;
   connectionState$;
+  canShowTransfer=false
 
   ngOnInit(): void {
     this.connectionForm = this.formBuilder.group(this.getFormControlsforConnecting());
@@ -31,22 +33,6 @@ export class ConnectComponent implements OnInit {
     this.onCreateOffer();
   }
 
-  // copy() {
-  //  const copyText = document.querySelector("#input");
-  //   copyText.select();
-  //   document.execCommand("copy");
-  // }
-
-  copyData(txt){
-    navigator.clipboard.writeText(txt).then(function(e) {
-      /* clipboard successfully set */
-      console.log("succes",e)
-    }, function(e) {
-      /* clipboard write failed */
-      console.log("fail",e)
-
-    })
-  }
 
   onClick(): any {
     this.router.navigate(['/transfer']);
@@ -56,30 +42,19 @@ export class ConnectComponent implements OnInit {
   private getFormControlsforConnecting() {
     return {
       offer: ['', Validators.compose([Validators.required])],
-      message: ['', Validators.compose([Validators.required])],
-      roomlogs: ['', Validators.compose([Validators.required])],
       answer: ['', Validators.compose([Validators.required])]
     };
   }
   async onCreateOffer() {
 
     this.connection = await this.webrtcService.createConnection();
-    this.connection.getMessageHandler().subscribe(message => {
-      const prev=this.connectionForm.controls.roomlogs.value;
-      this.connectionForm.controls.roomlogs.setValue(prev+'\n Other Person:'+message);
-
-    });
-    this.connectionState$  = this.connection.connectionStatusChanged().pipe(
-      tap(status => {
-        console.log("onCreateOffer" ,status);
-      })
-    );
-    const offer = await this.connection.createOfferForText();
+    this.webrtcConfigService.connection = this.connection;
+    this.canShowTransfer = true;
+    this.connectionState$  = this.connection.connectionStatusChanged();
+    const offer = await this.connection.createOffer();
 
     this.connectionForm.controls.offer.setValue(offer);
 
-    //todo remove
-    this.copyData(offer);
   }
 
 
@@ -92,10 +67,5 @@ export class ConnectComponent implements OnInit {
 
   }
 
-  sendMessage() {
-    const prev=this.connectionForm.controls.roomlogs.value;
-    const message =this.connectionForm.controls.message.value
-    this.connectionForm.controls.roomlogs.setValue(prev+'\n me:'+message);
-    this.connection.sendMessage(message   );
-  }
+
 }

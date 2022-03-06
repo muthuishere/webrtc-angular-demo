@@ -27,23 +27,13 @@
       <button  class="btn btn-primary pull-right" (click)="acceptAnswer()">Accept Answer</button>
     </div>
 
-    <div class="mb-3">
-
-      <input type="text" class="form-control" formControlName="message" placeholder="send message">
-
-      <textarea class="form-control" rows="5" formControlName="roomlogs"></textarea>
-
-    </div>
-    <div class="mb-3">
-      <button  class="btn btn-primary pull-right" (click)="sendMessage()">Send</button>
-    </div>
+    <ng-container *ngIf="canShowTransfer">
+      <app-transfer-container></app-transfer-container>
+    </ng-container>
   </form>
 
 
 
-    <div class="row" >
-      <div class="col-6">connectionState</div>
-      <div class="col-6">{{connectionState$ | async}}</div>
-    </div>
+
 
 

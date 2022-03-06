@@ -18,7 +18,7 @@ export class NavigationComponent implements OnInit {
   ];
   nonAuthLinks = [
     {label: 'Create Connection', path: '/connect'},
-    {label: 'Join a Connection', path: '/joinForText'},
+    {label: 'Join a Connection', path: '/join'},
   ];
 
   links$: Observable<any>;

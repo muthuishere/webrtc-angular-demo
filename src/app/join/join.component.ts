@@ -5,24 +5,26 @@ import {connect} from '../shared/config.actions';
 import {WebrtcService} from '../shared/webrtc.service';
 import {FormBuilder, Validators} from '@angular/forms';
 import {Connection} from '../shared/Connection';
+import {WebrtcConfigService} from '../shared/webrtc-config.service';
 
 @Component({
-  selector: 'app-joinForText',
+  selector: 'app-join',
   templateUrl: './join.component.html',
   styleUrls: ['./join.component.scss']
 })
 export class JoinComponent implements OnInit {
 
 
-  constructor(private router: Router, private webrtcService: WebrtcService, public formBuilder: FormBuilder, private store: Store<{ config: any }>) {
+  constructor(private router: Router, private webrtcConfigService: WebrtcConfigService, private webrtcService: WebrtcService, public formBuilder: FormBuilder, private store: Store<{ config: any }>) {
   }
 
   connectionForm;
+  connection: Connection;
+  canShowTransfer = false;
 
   ngOnInit(): void {
     this.connectionForm = this.formBuilder.group(this.getFormControlsforConnecting());
-    let controls = this.connectionForm.controls;
-    console.log(controls)
+
   }
 
   onClick(): any {
@@ -33,26 +35,20 @@ export class JoinComponent implements OnInit {
   private getFormControlsforConnecting() {
     return {
       offer: ['', Validators.compose([Validators.required])],
-      message: ['', Validators.compose([Validators.required])],
-      roomlogs: ['', Validators.compose([Validators.required])],
       answer: ['', Validators.compose([Validators.required])]
     };
   }
 
-
-  connection: Connection;
-
   async onAcceptOffer() {
 
     this.connection = await this.webrtcService.createConnection();
-    this.connection.getMessageHandler().subscribe(message => {
-      const prev=this.connectionForm.controls.roomlogs.value;
-      this.connectionForm.controls.roomlogs.setValue(prev+'\n'+message);
+    this.webrtcConfigService.connection = this.connection;
+    this.canShowTransfer = true;
 
-    });
+
     let controls = this.connectionForm.controls;
-    console.log(controls)
-    await this.connection.joinForText(controls.offer.value);
+    console.log(controls);
+    await this.connection.join(controls.offer.value);
 
     //TODO remove
     this.createAnswer();
@@ -60,13 +56,12 @@ export class JoinComponent implements OnInit {
   }
 
   async createAnswer() {
-    const answer =  await this.connection.createAnswer();
+    const answer = await this.connection.createAnswer();
     this.connectionForm.controls.answer.setValue(answer);
   }
-  public onFormSubmit(){
+
+  public onFormSubmit() {
 
   }
-  sendMessage() {
-    this.connection.sendMessage( this.connectionForm.controls.message.value   );
-  }
+
 }

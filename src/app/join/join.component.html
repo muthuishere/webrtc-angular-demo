@@ -30,16 +30,20 @@
   </div>
 
 
-  <div class="mb-3">
+  <ng-container *ngIf="canShowTransfer">
+    <app-transfer-container></app-transfer-container>
+  </ng-container>
+<!--  -->
+<!--  <div class="mb-3">-->
 
-    <input type="text" class="form-control" formControlName="message" placeholder="send message">
+<!--    <input type="text" class="form-control" formControlName="message" placeholder="send message">-->
 
-    <textarea class="form-control" rows="5" formControlName="roomlogs"></textarea>
+<!--    <textarea class="form-control" rows="5" formControlName="roomlogs"></textarea>-->
 
-  </div>
-  <div class="mb-3">
-    <button  class="btn btn-primary pull-right" (click)="sendMessage()">Send</button>
-  </div>
+<!--  </div>-->
+<!--  <div class="mb-3">-->
+<!--    <button  class="btn btn-primary pull-right" (click)="sendMessage()">Send</button>-->
+<!--  </div>-->
 
 </form>
 

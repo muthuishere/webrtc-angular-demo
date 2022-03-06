@@ -1,10 +1,9 @@
-import {BehaviorSubject, Observable, ReplaySubject, Subject} from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 
 export class Connection {
   private rtcpeerConnection: any;
   public channel: any;
   public messageHandler: BehaviorSubject<string> = new BehaviorSubject('');
-
 
 
   public getMessageHandler(): Observable<string> {
@@ -16,13 +15,9 @@ export class Connection {
 
   }
 
-  public connectionStatusChanged():Observable<string> {
-    const replaySubject = new BehaviorSubject<string>("unknown");
-    // replaySubject.next("unknown")
+  public connectionStatusChanged(): Observable<string> {
+    const replaySubject = new BehaviorSubject<string>('unknown');
     this.rtcpeerConnection.onconnectionstatechange = (event) => {
-      console.log('onconnectionstatechange event handler', event);
-      console.log('onconnectionstatechange event handler', event.currentTarget.connectionState);
-
       replaySubject.next(event.currentTarget.connectionState);
     };
     return replaySubject.asObservable();
@@ -30,10 +25,14 @@ export class Connection {
   }
 
 
-  public async createOfferForText() {
+  public async createOffer() {
 
     this.createDataChannel();
-    const offer = await this.rtcpeerConnection.createOffer();
+    const options= {
+      offerToReceiveAudio: true,
+      offerToReceiveVideo: true
+    };
+    const offer = await this.rtcpeerConnection.createOffer(options);
     await this.rtcpeerConnection.setLocalDescription(offer);
 
 
@@ -42,7 +41,7 @@ export class Connection {
 
         if (!event.candidate) {
           let s = JSON.stringify(this.rtcpeerConnection.localDescription);
-          console.log('inner createOfferForText =>' + s);
+          console.log('inner createOffer =>' + s);
           resolve(s);
 
         }
@@ -58,43 +57,34 @@ export class Connection {
 
   }
 
-  public async joinForText(offer) {
+  public async join(offer) {
     await this.rtcpeerConnection.setRemoteDescription(JSON.parse(offer));
-    this.setupMessageHandlersForText();
+    this.rtcpeerConnection.ondatachannel = (event) => {
+      this.setupMessageHandler(event.channel);
+    };
   }
 
-  private setupMessageHandlersForText() {
-    this.rtcpeerConnection.ondatachannel = (event) => {
-      console.log('ondatachannel');
-      this.channel = event.channel;
-      // channel.onopen = event => console.log('onopen', event);
-      // channel.onmessage = event => console.log('onmessage', event);
-      this.channel.onmessage = (event) => {
-        console.log('onmessage', event);
-        this.messageHandler.next(event.data);
-      };
+  private setupMessageHandler(channel) {
+    this.channel = channel;
+    channel.onmessage = (event) => {
+      this.messageHandler.next(event.data);
     };
   }
 
   public async createAnswer() {
     const answer = await this.rtcpeerConnection.createAnswer();
     await this.rtcpeerConnection.setLocalDescription(answer);
-    console.log(this.rtcpeerConnection);
     return JSON.stringify(answer);
   }
 
   public async acceptAnswer(answer) {
     await this.rtcpeerConnection.setRemoteDescription(JSON.parse(answer));
-    console.log(this.rtcpeerConnection);
-    console.log('acceptAnswer completed');
+
   }
 
   public async createDataChannel() {
-    this.channel = this.rtcpeerConnection.createDataChannel('data');
-    this.channel.onmessage = (event) => {
-      console.log('starter onmessage', event);
-      this.messageHandler.next(event.data);
-    };
+    const channel = this.rtcpeerConnection.createDataChannel('data');
+    this.setupMessageHandler(channel);
 
   }
 
