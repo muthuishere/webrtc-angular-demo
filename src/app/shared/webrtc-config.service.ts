@@ -1,8 +1,5 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Connection} from './Connection';
-import {Store} from '@ngrx/store';
-import {tap} from 'rxjs/operators';
-import {connect} from './config.actions';
 
 @Injectable({
   providedIn: 'root'
@@ -30,4 +27,5 @@ export class WebrtcConfigService {
   public set name(name:string){
     this._name = name;
   }
+
 }

@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {Observable} from 'rxjs';
-import {Store} from '@ngrx/store';
+import {Observable, of} from 'rxjs';
+
 import {map} from 'rxjs/operators';
 
 @Component({
@@ -17,18 +17,18 @@ export class NavigationComponent implements OnInit {
 
   ];
   nonAuthLinks = [
-    {label: 'Create Connection', path: '/connect'},
-    {label: 'Join a Connection', path: '/join'},
+    {label: 'Create MediaConnection', path: '/connect'},
+    {label: 'Join a MediaConnection', path: '/join'},
   ];
 
   links$: Observable<any>;
 
 
-  constructor(private router: Router, private store: Store<{ config: any }>) {
+  constructor(private router: Router) {
 
     const linksBasedOnConnection = (connected) => connected ? this.authLinks : this.nonAuthLinks;
 
-    this.links$ = store.select('config').pipe(
+    this.links$ = of({connected:false}).pipe(
       map(config => config.connected),
       map(linksBasedOnConnection),
     );

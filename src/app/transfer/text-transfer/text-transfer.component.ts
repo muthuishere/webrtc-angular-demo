@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {WebrtcConfigService} from '../../shared/webrtc-config.service';
 import {Router} from '@angular/router';
-import {WebrtcService} from '../../shared/webrtc.service';
+import {WebrtcConnectionService} from '../../shared/webrtc-connection.service';
 import {FormBuilder, Validators} from '@angular/forms';
 import {Connection} from '../../shared/Connection';
 
@@ -14,7 +14,7 @@ export class TextTransferComponent implements OnInit {
 
 
 
-  constructor(private router: Router,private webrtcConfigService:WebrtcConfigService, private webrtcService: WebrtcService, public formBuilder: FormBuilder) {
+  constructor(private router: Router, private webrtcConfigService:WebrtcConfigService, private webrtcService: WebrtcConnectionService, public formBuilder: FormBuilder) {
   }
   connectionForm;
 
@@ -23,8 +23,11 @@ export class TextTransferComponent implements OnInit {
     this.connectionForm = this.formBuilder.group(this.getFormControlsforConnecting());
 
     this.webrtcConfigService.connection.getMessageHandler().subscribe(message => {
-      const prev=this.connectionForm.controls.roomlogs.value;
-      this.connectionForm.controls.roomlogs.setValue(prev+'\n Other Person:'+message);
+      if(message.trim().length > 0){
+        const prev=this.connectionForm.controls.roomlogs.value;
+        this.connectionForm.controls.roomlogs.setValue(prev+'\n Someother :'+message);
+      }
+
 
     });
 
@@ -37,6 +40,10 @@ export class TextTransferComponent implements OnInit {
     };
   }
   sendMessage() {
-    this.webrtcConfigService.connection.sendMessage( this.connectionForm.controls.message.value   );
+    let message = this.connectionForm.controls.message.value;
+    const prev=this.connectionForm.controls.roomlogs.value;
+
+    this.webrtcConfigService.connection.sendMessage( message   );
+    this.connectionForm.controls.roomlogs.setValue(prev+'\n Me:'+message);
   }
 }

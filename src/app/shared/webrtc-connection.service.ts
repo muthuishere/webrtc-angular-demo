@@ -5,7 +5,7 @@ import {Connection} from './Connection';
 @Injectable({
   providedIn: 'root'
 })
-export class WebrtcService {
+export class WebrtcConnectionService {
   private currentWindow: any;
 
   constructor(@Inject(DOCUMENT) private document: Document) {
@@ -35,8 +35,9 @@ stun.voipstunt.com
 stun.voxgratia.org
 stun.xten.com
 */
-    const options = {iceServers: [{urls: 'stun:stun.l.google.com:19302'}]};
+    // const options = {iceServers: [{urls: 'stun:stun.l.google.com:19302'}]};
 
+    const options =null;
     const rtcpeerConnection = new this.currentWindow.RTCPeerConnection(options);
     rtcpeerConnection.onconnectionstatechange  = (event) => {
       console.log('onconnectionstatechange', event);

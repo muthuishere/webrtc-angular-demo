@@ -9,8 +9,7 @@ import { NavigationComponent } from './navigation/navigation.component';
 import { ConnectComponent } from './connect/connect.component';
 
 import {TransferModule} from './transfer/transfer.module';
-import {configReducer} from './shared/config.reducer';
-import {StoreModule} from '@ngrx/store';
+
 import { JoinComponent } from './join/join.component';
 import {ReactiveFormsModule} from '@angular/forms';
 
@@ -24,7 +23,7 @@ import {ReactiveFormsModule} from '@angular/forms';
   ],
   imports: [
     BrowserModule,
-    StoreModule.forRoot({config: configReducer}),
+
     TransferModule,
     AppRoutingModule,
     ReactiveFormsModule

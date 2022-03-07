@@ -1,12 +1,8 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
-import {Store} from '@ngrx/store';
-import {connect} from '../shared/config.actions';
 import {Router} from '@angular/router';
 import {FormBuilder, Validators} from '@angular/forms';
-import {WebrtcService} from '../shared/webrtc.service';
+import {WebrtcConnectionService} from '../shared/webrtc-connection.service';
 import {Connection} from '../shared/Connection';
-import {Observable, of} from 'rxjs';
-import {tap} from 'rxjs/operators';
 import {WebrtcConfigService} from '../shared/webrtc-config.service';
 
 @Component({
@@ -17,10 +13,9 @@ import {WebrtcConfigService} from '../shared/webrtc-config.service';
 })
 export class ConnectComponent implements OnInit {
 
-  // constructor(private router: Router, private webrtcService: WebrtcService, public formBuilder: FormBuilder, private store: Store<{ config: any }>) {
-  // }
 
-  constructor(private router: Router, private webrtcService: WebrtcService, private webrtcConfigService: WebrtcConfigService, public formBuilder: FormBuilder, private store: Store<{ config: any }>) {
+
+  constructor(private router: Router,private webrtcService: WebrtcConnectionService, private webrtcConfigService: WebrtcConfigService, public formBuilder: FormBuilder) {
   }
   connectionForm;
   connection: Connection;
@@ -29,15 +24,13 @@ export class ConnectComponent implements OnInit {
 
   ngOnInit(): void {
     this.connectionForm = this.formBuilder.group(this.getFormControlsforConnecting());
-
+    this.connection = this.webrtcService.createConnection();
+    this.webrtcConfigService.connection = this.connection;
+    this.canShowTransfer = true;
     this.onCreateOffer();
   }
 
 
-  onClick(): any {
-    this.router.navigate(['/transfer']);
-    // this.store.dispatch(connect());
-  }
 
   private getFormControlsforConnecting() {
     return {
@@ -47,9 +40,7 @@ export class ConnectComponent implements OnInit {
   }
   async onCreateOffer() {
 
-    this.connection = await this.webrtcService.createConnection();
-    this.webrtcConfigService.connection = this.connection;
-    this.canShowTransfer = true;
+
     this.connectionState$  = this.connection.connectionStatusChanged();
     const offer = await this.connection.createOffer();
 

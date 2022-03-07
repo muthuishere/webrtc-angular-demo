@@ -1,14 +1,7 @@
 import {BehaviorSubject, Observable} from 'rxjs';
 
-export class Connection {
+export class MediaConnection {
   private rtcpeerConnection: any;
-  public channel: any;
-  public messageHandler: BehaviorSubject<string> = new BehaviorSubject('');
-
-
-  public getMessageHandler(): Observable<string> {
-    return this.messageHandler.asObservable();
-  }
 
   constructor(rtcpeerConnection: any) {
     this.rtcpeerConnection = rtcpeerConnection;
@@ -23,11 +16,11 @@ export class Connection {
     return replaySubject.asObservable();
 
   }
-  
+
 
   public async createOffer() {
 
-    this.createDataChannel();
+
     const options= {
       offerToReceiveAudio: true,
       offerToReceiveVideo: true
@@ -59,17 +52,10 @@ export class Connection {
 
   public async join(offer) {
     await this.rtcpeerConnection.setRemoteDescription(JSON.parse(offer));
-    this.rtcpeerConnection.ondatachannel = (event) => {
-      this.setupMessageHandler(event.channel);
-    };
+
   }
 
-  private setupMessageHandler(channel) {
-    this.channel = channel;
-    channel.onmessage = (event) => {
-      this.messageHandler.next(event.data);
-    };
-  }
+
 
   public async createAnswer() {
     const answer = await this.rtcpeerConnection.createAnswer();
@@ -82,16 +68,9 @@ export class Connection {
 
   }
 
-  public async createDataChannel() {
-    const channel = this.rtcpeerConnection.createDataChannel('data');
-    this.setupMessageHandler(channel);
-
-  }
 
 
-  sendMessage(value) {
-    this.channel.send(value);
-  }
+
 
   close() {
     this.rtcpeerConnection.close();

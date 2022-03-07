@@ -1,11 +1,15 @@
-<ng-container>
+<div>
 <div class="row" >
   <div class="col-6">connectionState</div>
   <div class="col-6">{{connectionStatus}}</div>
 </div>
 
-<ng-container *ngIf="canShow">
+<div *ngIf="connectionStatus == 'connected'">
+
+  <hr/>
+  <app-video-transfer></app-video-transfer>
+  <hr/>
   <app-text-transfer></app-text-transfer>
-</ng-container>
-</ng-container>
+</div>
+</div>
 

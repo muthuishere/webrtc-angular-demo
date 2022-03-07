@@ -4,13 +4,15 @@ import { TextTransferComponent } from './text-transfer/text-transfer.component';
 import {TransferRoutingModule} from './transfer-routing.module';
 import {ReactiveFormsModule} from '@angular/forms';
 import { TransferContainerComponent } from './transfer-container/transfer-container.component';
+import { VideoTransferComponent } from './video-transfer/video-transfer.component';
 
 
 
 @NgModule({
   declarations: [
     TextTransferComponent,
-    TransferContainerComponent
+    TransferContainerComponent,
+    VideoTransferComponent
   ],
   exports: [
     TransferContainerComponent
