@@ -19,7 +19,7 @@ describe('TextTransferComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should createConnection', () => {
+  it('should createDataConnection', () => {
     expect(component).toBeTruthy();
   });
 });

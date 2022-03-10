@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { WebrtcConnectionService } from './webrtc-connection.service';
+import { WebrtcConnectionService } from '../connection/services/webrtc-connection.service';
 
 describe('WebrtcService', () => {
   let service: WebrtcConnectionService;

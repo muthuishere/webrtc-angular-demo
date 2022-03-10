@@ -1,5 +1,5 @@
 
-  <form [formGroup]="connectionForm" (ngSubmit)="onFormSubmit()">
+  <form [formGroup]="connectionForm" >
 
     <div class="mb-3">
 
@@ -27,7 +27,7 @@
       <button  class="btn btn-primary pull-right" (click)="acceptAnswer()">Accept Answer</button>
     </div>
 
-      <app-transfer-container></app-transfer-container>
+      <app-transfer-container *ngIf="connection"></app-transfer-container>
 
   </form>
 

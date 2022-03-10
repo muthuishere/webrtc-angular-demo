@@ -1,9 +1,8 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {FormBuilder, Validators} from '@angular/forms';
-import {WebrtcConnectionService} from '../shared/webrtc-connection.service';
-import {Connection} from '../shared/Connection';
-import {WebrtcConfigService} from '../shared/webrtc-config.service';
+import {WebrtcConfigService} from '../config/webrtc-config.service';
+import {Connection, ConnectionType} from '../models/Connection';
 
 @Component({
   selector: 'app-connect',
@@ -15,7 +14,7 @@ export class ConnectComponent implements OnInit {
 
 
 
-  constructor(private router: Router,private webrtcService: WebrtcConnectionService, private webrtcConfigService: WebrtcConfigService, public formBuilder: FormBuilder) {
+  constructor(private router: Router, private route: ActivatedRoute, private webrtcConfigService: WebrtcConfigService, public formBuilder: FormBuilder) {
   }
   connectionForm;
   connection: Connection;
@@ -24,13 +23,25 @@ export class ConnectComponent implements OnInit {
 
   ngOnInit(): void {
     this.connectionForm = this.formBuilder.group(this.getFormControlsforConnecting());
-    this.connection = this.webrtcService.createConnection();
-    this.webrtcConfigService.connection = this.connection;
-    this.canShowTransfer = true;
-    this.onCreateOffer();
+    this.route.paramMap.subscribe( paramMap => {
+      this.connection=null;
+
+      console.log(paramMap);
+      const currentType  = paramMap.get('type');
+      this.connect(currentType);
+    });
+
   }
 
 
+  private connect(connectionType: string) {
+    this.connectionForm = this.formBuilder.group(this.getFormControlsforConnecting());
+    this.connection = this.webrtcConfigService.createConnection(connectionType);
+
+    this.canShowTransfer = true;
+    //TODO Remove
+    this.onCreateOffer();
+  }
 
   private getFormControlsforConnecting() {
     return {
@@ -38,18 +49,19 @@ export class ConnectComponent implements OnInit {
       answer: ['', Validators.compose([Validators.required])]
     };
   }
+
+
   async onCreateOffer() {
 
-
+console.log("create offer");
     this.connectionState$  = this.connection.connectionStatusChanged();
     const offer = await this.connection.createOffer();
 
+    console.log(offer);
     this.connectionForm.controls.offer.setValue(offer);
 
   }
 
-
-  onFormSubmit(){}
 
   async acceptAnswer() {
 

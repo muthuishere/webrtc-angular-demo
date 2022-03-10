@@ -1,14 +1,32 @@
 import {BehaviorSubject, Observable} from 'rxjs';
+import {Connection, ConnectionType} from './Connection';
 
-export class MediaConnection {
+
+
+/*
+  //connectionStatusChanged
+  //createOffer
+  //acceptAnswer
+  //join
+  // createAnswer
+ */
+export class DataConnection implements Connection {
   private rtcpeerConnection: any;
+  public channel: any;
+  public messageHandler: BehaviorSubject<any> = new BehaviorSubject('');
+
+
+
+  public getMessageHandler(): Observable<any> {
+    return this.messageHandler.asObservable();
+  }
 
   constructor(rtcpeerConnection: any) {
     this.rtcpeerConnection = rtcpeerConnection;
 
   }
 
-  public connectionStatusChanged(): Observable<string> {
+  connectionStatusChanged(): Observable<string> {
     const replaySubject = new BehaviorSubject<string>('unknown');
     this.rtcpeerConnection.onconnectionstatechange = (event) => {
       replaySubject.next(event.currentTarget.connectionState);
@@ -18,13 +36,11 @@ export class MediaConnection {
   }
 
 
-  public async createOffer() {
+  async createOffer() {
 
-
-    const options= {
-      offerToReceiveAudio: true,
-      offerToReceiveVideo: true
-    };
+    const data="data"
+    this.createDataChannelWithName(data);
+    const options = null
     const offer = await this.rtcpeerConnection.createOffer(options);
     await this.rtcpeerConnection.setLocalDescription(offer);
 
@@ -34,7 +50,7 @@ export class MediaConnection {
 
         if (!event.candidate) {
           let s = JSON.stringify(this.rtcpeerConnection.localDescription);
-          console.log('inner createOffer =>' + s);
+          // console.log('inner createOffer =>' + s);
           resolve(s);
 
         }
@@ -50,27 +66,41 @@ export class MediaConnection {
 
   }
 
-  public async join(offer) {
+  async join(offer) {
     await this.rtcpeerConnection.setRemoteDescription(JSON.parse(offer));
-
+    this.rtcpeerConnection.ondatachannel = (event) => {
+      this.setupMessageHandler(event.channel);
+    };
   }
 
+  private setupMessageHandler(channel) {
+    this.channel = channel;
+    channel.onmessage = (event) => {
+      this.messageHandler.next(event.data);
+    };
+  }
 
-
-  public async createAnswer() {
+  async createAnswer() {
     const answer = await this.rtcpeerConnection.createAnswer();
     await this.rtcpeerConnection.setLocalDescription(answer);
     return JSON.stringify(answer);
   }
 
-  public async acceptAnswer(answer) {
+  async acceptAnswer(answer) {
     await this.rtcpeerConnection.setRemoteDescription(JSON.parse(answer));
 
   }
 
+  public async createDataChannelWithName(channelName) {
+    const channel = this.rtcpeerConnection.createDataChannel(channelName);
+    this.setupMessageHandler(channel);
+
+  }
 
 
-
+  sendMessage(value) {
+    this.channel.send(value);
+  }
 
   close() {
     this.rtcpeerConnection.close();
@@ -106,5 +136,9 @@ export class MediaConnection {
     //   console.log("ontrack",evt)
     //   // cb(evt.stream);
     // }
+  }
+
+  getConnectionType(): ConnectionType {
+    return ConnectionType.TEXT;
   }
 }

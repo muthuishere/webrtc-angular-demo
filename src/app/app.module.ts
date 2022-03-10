@@ -6,11 +6,11 @@ import { AppComponent } from './app.component';
 
 import { NavigationComponent } from './navigation/navigation.component';
 
-import { ConnectComponent } from './connect/connect.component';
+import { ConnectComponent } from './connection/connect/connect.component';
 
 import {TransferModule} from './transfer/transfer.module';
 
-import { JoinComponent } from './join/join.component';
+import { JoinComponent } from './connection/join/join.component';
 import {ReactiveFormsModule} from '@angular/forms';
 
 @NgModule({

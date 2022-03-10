@@ -1,5 +1,5 @@
 import {Component, OnDestroy} from '@angular/core';
-import {WebrtcConfigService} from './shared/webrtc-config.service';
+import {WebrtcConfigService} from './connection/config/webrtc-config.service';
 
 @Component({
   selector: 'app-root',

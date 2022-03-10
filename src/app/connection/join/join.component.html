@@ -1,5 +1,5 @@
 
-<form [formGroup]="connectionForm" (ngSubmit)="onFormSubmit()">
+<form [formGroup]="connectionForm" >
 
 
   <div class="mb-3">
@@ -30,19 +30,8 @@
   </div>
 
 
-    <app-transfer-container></app-transfer-container>
+    <app-transfer-container *ngIf="connection"></app-transfer-container>
 
-<!--  -->
-<!--  <div class="mb-3">-->
-
-<!--    <input type="text" class="form-control" formControlName="message" placeholder="send message">-->
-
-<!--    <textarea class="form-control" rows="5" formControlName="roomlogs"></textarea>-->
-
-<!--  </div>-->
-<!--  <div class="mb-3">-->
-<!--    <button  class="btn btn-primary pull-right" (click)="sendMessage()">Send</button>-->
-<!--  </div>-->
 
 </form>
 

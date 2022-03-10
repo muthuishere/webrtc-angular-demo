@@ -16,9 +16,11 @@ export class NavigationComponent implements OnInit {
     {label: 'Transfer Text', path: '/transfer/text'},
 
   ];
+
+
   nonAuthLinks = [
-    {label: 'Create MediaConnection', path: '/connect'},
-    {label: 'Join a MediaConnection', path: '/join'},
+    {label: 'Create VideoCallConnection', path: '/connect'},
+    {label: 'Join a VideoCallConnection', path: '/join'},
   ];
 
   links$: Observable<any>;

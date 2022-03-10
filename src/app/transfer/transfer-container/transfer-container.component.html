@@ -7,9 +7,9 @@
 <div *ngIf="connectionStatus == 'connected'">
 
   <hr/>
-  <app-video-transfer></app-video-transfer>
+  <app-video-transfer  *ngIf="isMedia" ></app-video-transfer>
   <hr/>
-  <app-text-transfer></app-text-transfer>
+  <app-text-transfer  *ngIf="isData"></app-text-transfer>
 </div>
 </div>
 
