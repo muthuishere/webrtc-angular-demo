@@ -1,44 +1,89 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 
-import {WebrtcConnectionService} from '../services/webrtc-connection.service';
+import {WebrtcCreatorService} from '../services/webrtc-creator.service';
 import {FormBuilder, Validators} from '@angular/forms';
-import {WebrtcConfigService} from '../config/webrtc-config.service';
-import {Connection, ConnectionType} from '../models/Connection';
+import {WebrtcConnectorService} from '../config/webrtc-connector.service';
+import {Connection} from '../models/Connection';
+import {SignallingServerService} from '../../signalling/signalling-server.service';
 
 @Component({
   selector: 'app-join',
   templateUrl: './join.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./join.component.scss']
 })
 export class JoinComponent implements OnInit {
 
 
-  constructor(private router: Router, private route: ActivatedRoute,private webrtcConfigService: WebrtcConfigService, private webrtcService: WebrtcConnectionService, public formBuilder: FormBuilder) {
+  constructor(private signallingServerService: SignallingServerService, private ref: ChangeDetectorRef, private router: Router, private route: ActivatedRoute, private webrtcConfigService: WebrtcConnectorService, private webrtcService: WebrtcCreatorService, public formBuilder: FormBuilder) {
   }
 
   connectionForm;
   connection: Connection;
   canShowTransfer = false;
+  canShowCreateAnswer = false;
+  showJoinAgain = false;
+  connectionType: string;
 
   ngOnInit(): void {
+    this.createFormInstance();
+    this.route.paramMap.subscribe(async paramMap => {
 
-    this.route.paramMap.subscribe( paramMap => {
-      this.connection=null;
-      const currentType  = paramMap.get('type');
+
+      await this.resetComponent();
+
+      const currentType = paramMap.get('type');
       this.joinConnection(currentType);
 
-    })
+    });
+
+  }
+  private async resetComponent() {
+    await this.webrtcConfigService.closeConnection();
+    this.connectionForm.reset();
+    this.canShowTransfer = false;
+    this.canShowCreateAnswer = false;
+    this.showJoinAgain = false;
+    this.ref.detectChanges();
+  }
+  joinAgain() {
+    this.connectionForm.reset();
+    this.connection = this.webrtcConfigService.createConnection(this.connectionType);
+    this.waitForStatusChange();
+    this.canShowCreateAnswer = false;
+    this.showJoinAgain = false;
+    this.ref.detectChanges();
+  }
+
+  private createFormInstance() {
+    this.connectionForm = this.formBuilder.group(this.getFormControlsforConnecting());
+  }
+
+  private joinConnection(connectionType: string) {
+    console.log('joinConnection connecting params', connectionType);
+    this.canShowTransfer = false;
+    this.connectionType = connectionType;
+    this.connectionForm.reset();
+    this.connection = this.webrtcConfigService.createConnection(connectionType);
+    this.waitForStatusChange();
+
+    this.canShowTransfer = true;
+    //TODO remove
+    this.signallingServerService.joinApp(this);
 
   }
 
+  private waitForStatusChange() {
+    this.connection.connectionStatusChanged().subscribe(status => {
 
-  private joinConnection(connectionType:string) {
+      console.log('joinConnection connectionStatusChanged', status);
+      if (status === 'disconnected') {
+        this.showJoinAgain = true;
+        this.ref.detectChanges();
+      }
 
-    this.connectionForm = this.formBuilder.group(this.getFormControlsforConnecting());
-    this.connection = this.webrtcConfigService.createConnection(connectionType);
-
-    this.canShowTransfer = true;
+    });
   }
 
   private getFormControlsforConnecting() {
@@ -49,14 +94,15 @@ export class JoinComponent implements OnInit {
   }
 
 
-
   async onAcceptOffer() {
 
 
     await this.connection.join(this.connectionForm.controls.offer.value);
 
-    //TODO remove
-    this.createAnswer();
+    this.canShowCreateAnswer = true;
+    this.ref.detectChanges();
+    // //TODO remove
+    // this.createAnswer();
 
   }
 
@@ -64,7 +110,6 @@ export class JoinComponent implements OnInit {
     const answer = await this.connection.createAnswer();
     this.connectionForm.controls.answer.setValue(answer);
   }
-
 
 
 }

@@ -6,7 +6,7 @@ import {VideoCallConnection} from '../models/VideoCallConnection';
 @Injectable({
   providedIn: 'root'
 })
-export class WebrtcConnectionService {
+export class WebrtcCreatorService {
   private currentWindow: any;
 
   constructor(@Inject(DOCUMENT) private document: Document) {
@@ -15,16 +15,6 @@ export class WebrtcConnectionService {
   }
   public createRtcPeerConnection(): any {
 
-    const options = null;
-    const rtcpeerConnection = new this.currentWindow.RTCPeerConnection(options);
-    rtcpeerConnection.onconnectionstatechange = (event) => {
-      console.log('onconnectionstatechange', event);
-    };
-    return rtcpeerConnection;
-
-  }
-
-  public createDataConnection(): DataConnection {
     /*
 stun.l.google.com:19302
 stun1.l.google.com:19302
@@ -47,6 +37,17 @@ stun.voxgratia.org
 stun.xten.com
 */
     // const options = {iceServers: [{urls: 'stun:stun.l.google.com:19302'}]};
+    const options = null;
+    const rtcpeerConnection = new this.currentWindow.RTCPeerConnection(options);
+    rtcpeerConnection.onconnectionstatechange = (event) => {
+      console.log('onconnectionstatechange', event);
+    };
+    return rtcpeerConnection;
+
+  }
+
+  public createDataConnection(): DataConnection {
+
 
     const rtcpeerConnection = this.createRtcPeerConnection();
     return new DataConnection(rtcpeerConnection);

@@ -1,4 +1,4 @@
-import {BehaviorSubject, Observable} from 'rxjs';
+import {BehaviorSubject, Observable, ReplaySubject} from 'rxjs';
 import {Connection, ConnectionType} from './Connection';
 
 
@@ -14,6 +14,8 @@ export class DataConnection implements Connection {
   private rtcpeerConnection: any;
   public channel: any;
   public messageHandler: BehaviorSubject<any> = new BehaviorSubject('');
+  private connectionStatus = new BehaviorSubject<string>('unknown');
+
 
 
 
@@ -27,11 +29,11 @@ export class DataConnection implements Connection {
   }
 
   connectionStatusChanged(): Observable<string> {
-    const replaySubject = new BehaviorSubject<string>('unknown');
+
     this.rtcpeerConnection.onconnectionstatechange = (event) => {
-      replaySubject.next(event.currentTarget.connectionState);
+      this.connectionStatus.next(event.currentTarget.connectionState);
     };
-    return replaySubject.asObservable();
+    return this.connectionStatus.asObservable();
 
   }
 
@@ -66,7 +68,7 @@ export class DataConnection implements Connection {
 
   }
 
-  async join(offer) {
+  async join(offer):Promise<void> {
     await this.rtcpeerConnection.setRemoteDescription(JSON.parse(offer));
     this.rtcpeerConnection.ondatachannel = (event) => {
       this.setupMessageHandler(event.channel);
@@ -104,6 +106,8 @@ export class DataConnection implements Connection {
 
   close() {
     this.rtcpeerConnection.close();
+    this.connectionStatus.next('disconnected');
+
   }
   addStream(stream: any) {
     stream.getTracks().forEach( (track) =>{
@@ -141,4 +145,6 @@ export class DataConnection implements Connection {
   getConnectionType(): ConnectionType {
     return ConnectionType.TEXT;
   }
+
+
 }

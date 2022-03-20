@@ -19,13 +19,23 @@ describe('MockSignallingServerService', () => {
   it('Answers can be used', async () => {
     await service.putAnswer('test');
     console.log("completed")
-    const res = await service.getAnswer();
+    const res = await service.waitAndgetAnswer();
     expect(res).toBe('test');
   });
   it('offers can be used', async () => {
     await service.putOffer('testoffers');
     console.log("completed")
-    const res = await service.getOffer();
+    const res = await service.waitAndgetOffer();
+    expect(res).toBe('testoffers');
+  });
+  it('offer should wait till offer has value', async () => {
+    service.defaultTimeOut=100;
+    setTimeout(() => {
+      service.putOffer('testoffers');
+    }, 400);
+
+    console.log("completed")
+    const res = await service.waitAndgetOffer();
     expect(res).toBe('testoffers');
   });
 });

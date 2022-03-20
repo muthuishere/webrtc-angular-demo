@@ -1,6 +1,6 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {VideoService} from './services/video.service';
-import {WebrtcConfigService} from '../../connection/config/webrtc-config.service';
+import {WebrtcConnectorService} from '../../connection/config/webrtc-connector.service';
 import {VideoCallConnection} from '../../connection/models/VideoCallConnection';
 
 @Component({
@@ -15,7 +15,7 @@ export class VideoTransferComponent implements OnInit {
 
   connection: VideoCallConnection;
 
-  constructor(public webrtcConfigService: WebrtcConfigService, public videoService: VideoService) {
+  constructor(public webrtcConfigService: WebrtcConnectorService, public videoService: VideoService) {
     this.connection = webrtcConfigService.asMediaConnection();
   }
 
@@ -49,8 +49,8 @@ export class VideoTransferComponent implements OnInit {
 
   hangup() {
 
-    this.myVideoView.nativeElement.srcObject = null;
-    this.remoteVideoView.nativeElement.srcObject = null;
-    this.connection.close();
+    // this.myVideoView.nativeElement.srcObject = null;
+    // this.remoteVideoView.nativeElement.srcObject = null;
+    this.webrtcConfigService.closeConnection();
   }
 }

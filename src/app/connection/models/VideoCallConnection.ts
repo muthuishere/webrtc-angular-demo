@@ -5,18 +5,17 @@ import {promise} from 'protractor';
 export class VideoCallConnection implements Connection {
   private rtcpeerConnection: any;
   private localStream: BehaviorSubject<any> = new BehaviorSubject(null);
-
+  private connectionStatus = new BehaviorSubject<string>('unknown');
   private remoteStream: BehaviorSubject<any> = new BehaviorSubject(new MediaStream());
   // public messageHandler: BehaviorSubject<any> = new BehaviorSubject(null);
 
   constructor(rtcpeerConnection: any) {
     this.rtcpeerConnection = rtcpeerConnection;
-    console.log(rtcpeerConnection)
+    console.log(rtcpeerConnection);
     rtcpeerConnection.ontrack = (event) => {
       console.log('received ontrack', event);
       console.log('received event.currentTarget.connectionState', event.currentTarget.connectionState);
-// const currentStream  =remoteStream.getValue();
-//       currentStream.addTrack(event.track);
+
       this.remoteStream.next(event.streams[0]) ;
 
     };
@@ -28,11 +27,14 @@ export class VideoCallConnection implements Connection {
     return this.remoteStream.asObservable();
   }
   public connectionStatusChanged(): Observable<string> {
-    const replaySubject = new BehaviorSubject<string>('unknown');
+
     this.rtcpeerConnection.onconnectionstatechange = (event) => {
-      replaySubject.next(event.currentTarget.connectionState);
+      if('disconnected' === event.currentTarget.connectionState) {
+       this.closeAllStreams();
+      }
+      this.connectionStatus.next(event.currentTarget.connectionState);
     };
-    return replaySubject.asObservable();
+    return this.connectionStatus.asObservable();
 
   }
 
@@ -71,7 +73,7 @@ export class VideoCallConnection implements Connection {
 
   }
 
-  public async join(offer) {
+  public async join(offer):Promise<void> {
     await this.rtcpeerConnection.setRemoteDescription(JSON.parse(offer));
     await this.addVideoCallStream(this.rtcpeerConnection);
     console.log(this.rtcpeerConnection);
@@ -90,26 +92,31 @@ export class VideoCallConnection implements Connection {
   }
 
 
-  close() {
+  close():void {
 
+
+
+    this.connectionStatus.next('disconnected');
+
+    this.closeAllStreams();
+    this.rtcpeerConnection.close();
+  }
+
+
+  private closeAllStreams() {
     const localStream = this.localStream.getValue();
     if (localStream) {
+      console.log('closing local stream');
       localStream.getTracks().forEach(track => track.stop());
     }
 
 
     const remoteStream = this.remoteStream.getValue();
     if (remoteStream) {
+      console.log('closing remote stream');
       remoteStream.getTracks().forEach(track => track.stop());
     }
-
-
-
-
-
-    this.rtcpeerConnection.close();
   }
-
 
   getConnectionType(): ConnectionType {
     return ConnectionType.VIDEOCALL;

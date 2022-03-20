@@ -1,35 +1,39 @@
-
-  <form [formGroup]="connectionForm" >
-
-    <div class="mb-3">
+<div *ngIf="showConnectAgain">
+  <button class="btn btn-primary" (click)="connectAgain()">Connect Again</button>
 
 
-      <button  class="btn btn-primary" (click)="onCreateOffer()">Create Offer</button>
+</div>
+
+<form [formGroup]="connectionForm" *ngIf="!showConnectAgain">
+
+  <div class="mb-3">
 
 
-
-    </div>
-
-    <div class="mb-3">
+    <button class="btn btn-primary" (click)="onCreateOffer()">Create Offer</button>
 
 
+  </div>
 
-      <textarea class="form-control" rows="5" formControlName="offer" readonly="true"></textarea>
+  <div class="mb-3">
 
 
-    </div>
+    <textarea class="form-control" rows="5" formControlName="offer" readonly="true"></textarea>
+
+
+  </div>
+  <div *ngIf="canShowAcceptAnswer">
     <div class="mb-3">
 
       <textarea class="form-control" rows="5" formControlName="answer"></textarea>
 
     </div>
     <div class="mb-3">
-      <button  class="btn btn-primary pull-right" (click)="acceptAnswer()">Accept Answer</button>
+      <button class="btn btn-primary pull-right" (click)="acceptAnswer()">Accept Answer</button>
     </div>
+  </div>
+  <app-transfer-container *ngIf="connection"></app-transfer-container>
 
-      <app-transfer-container *ngIf="connection"></app-transfer-container>
-
-  </form>
+</form>
 
 
 

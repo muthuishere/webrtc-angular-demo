@@ -1,11 +1,11 @@
 {
   "posts": [
     {
-      "offer": "testoffers",
+      "answer": "",
       "id": 1
     },
     {
-      "answer": "test",
+      "answer": "",
       "id": 2
     }
   ],

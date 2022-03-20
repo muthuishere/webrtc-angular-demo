@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {WebrtcConfigService} from '../../connection/config/webrtc-config.service';
-import {WebrtcConnectionService} from '../../connection/services/webrtc-connection.service';
+import {WebrtcConnectorService} from '../../connection/config/webrtc-connector.service';
+import {WebrtcCreatorService} from '../../connection/services/webrtc-creator.service';
 import {FormBuilder} from '@angular/forms';
 import {ConnectionType} from '../../connection/models/Connection';
 
@@ -19,31 +19,36 @@ export class TransferContainerComponent implements OnInit {
   connectionStatus: string = 'unknown';
 
 
-  constructor(private router: Router, private ref: ChangeDetectorRef, private webrtcConfigService: WebrtcConfigService, private webrtcService: WebrtcConnectionService, public formBuilder: FormBuilder) {
+  constructor(private router: Router, private ref: ChangeDetectorRef, private webrtcConfigService: WebrtcConnectorService, private webrtcService: WebrtcCreatorService, public formBuilder: FormBuilder) {
 
   }
 
   ngOnInit(): void {
 
-    let connection = this.webrtcConfigService.connection;
+    console.log('transfer container init');
 
-    connection.connectionStatusChanged().subscribe(status => {
+    this.webrtcConfigService.getConnectionStatus().subscribe(status => {
 
+      console.log('transfer container status', status);
+      //if disconnected then make it empty
+      console.log('TransferContainerComponent connection status changed', status);
       this.connectionStatus = status;
-      this.isMedia = connection.getConnectionType() === ConnectionType.VIDEOCALL;
-      this.isData = connection.getConnectionType() === ConnectionType.TEXT;
+      const connection = this.webrtcConfigService.connection;
 
-      // if (status === 'connected') {
-      //   this.canShow = true;
-      //
-      // }
+      if (status === 'connected') {
+        this.isMedia = connection.getConnectionType() === ConnectionType.VIDEOCALL;
+        this.isData = connection.getConnectionType() === ConnectionType.TEXT;
+
+
+      }else{
+        this.isMedia = false;
+        this.isData = false;
+      }
       // this.ref.markForCheck();
       this.ref.detectChanges();
     });
   }
 
-  // ngAfterViewChecked(): void {
-  //   console.log('checking ngAfterViewChecked')
-  // }
+
 
 }

@@ -1,0 +1,54 @@
+div.rotate-1 {
+  -webkit-transform: rotate(-6deg);
+  -o-transform: rotate(-6deg);
+  -moz-transform: rotate(-6deg);
+}
+
+div.rotate-2 {
+  -o-transform: rotate(4deg);
+  -webkit-transform: rotate(4deg);
+  -moz-transform: rotate(4deg);
+  position: relative;
+  top: 5px;
+}
+
+.lazur-bg {
+  background-color: #23c6c8;
+  color: #ffffff;
+}
+
+.red-bg {
+  background-color: #ed5565;
+  color: #ffffff;
+}
+
+.navy-bg {
+  background-color: #1ab394;
+  color: #ffffff;
+}
+
+.yellow-bg {
+  background-color: #f8ac59;
+  color: #ffffff;
+}
+
+.sticky-card{
+  max-width: 15vw;
+  padding: 10px;
+}
+
+
+
+
+  .drag-handle {
+    position: relative;
+    top: -10px;
+    right: 10px;
+    color: #ccc;
+    width: 24px;
+    height: 24px;
+    cursor: grab;
+    float: right;
+    z-index: 1000;
+  }
+

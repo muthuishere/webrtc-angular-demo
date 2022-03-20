@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {WebrtcConfigService} from '../../connection/config/webrtc-config.service';
+import {WebrtcConnectorService} from '../../connection/config/webrtc-connector.service';
 import {Router} from '@angular/router';
-import {WebrtcConnectionService} from '../../connection/services/webrtc-connection.service';
+import {WebrtcCreatorService} from '../../connection/services/webrtc-creator.service';
 import {FormBuilder, Validators} from '@angular/forms';
 import {DataConnection} from '../../connection/models/DataConnection';
 
@@ -15,20 +15,20 @@ export class TextTransferComponent implements OnInit {
 
   dataConnection: DataConnection;
 
-  constructor(private router: Router, private webrtcConfigService: WebrtcConfigService,  public formBuilder: FormBuilder) {
+  constructor(private router: Router, private webrtcConfigService: WebrtcConnectorService, public formBuilder: FormBuilder) {
   }
 
-  connectionForm;
+  transferForm;
 
 
   ngOnInit(): void {
     this.dataConnection = this.webrtcConfigService.asDataConnection();
-    this.connectionForm = this.formBuilder.group(this.getFormControlsforConnecting());
+    this.transferForm = this.formBuilder.group(this.getFormControlsforConnecting());
 
     this.dataConnection.getMessageHandler().subscribe(message => {
       if (message.trim().length > 0) {
-        const prev = this.connectionForm.controls.roomlogs.value;
-        this.connectionForm.controls.roomlogs.setValue(prev + '\n Someother :' + message);
+        const prev = this.transferForm.controls.roomlogs.value;
+        this.transferForm.controls.roomlogs.setValue(prev + '\n Someother :' + message);
       }
 
 
@@ -44,11 +44,11 @@ export class TextTransferComponent implements OnInit {
   }
 
   sendMessage() {
-    let message = this.connectionForm.controls.message.value;
-    const prev = this.connectionForm.controls.roomlogs.value;
+    let message = this.transferForm.controls.message.value;
+    const prev = this.transferForm.controls.roomlogs.value;
 
 
     this.dataConnection.sendMessage(message);
-    this.connectionForm.controls.roomlogs.setValue(prev + '\n Me:' + message);
+    this.transferForm.controls.roomlogs.setValue(prev + '\n Me:' + message);
   }
 }

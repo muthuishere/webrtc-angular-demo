@@ -5,6 +5,10 @@ import {TransferRoutingModule} from './transfer-routing.module';
 import {ReactiveFormsModule} from '@angular/forms';
 import { TransferContainerComponent } from './transfer-container/transfer-container.component';
 import { VideoTransferComponent } from './video-transfer/video-transfer.component';
+import { WhiteboardComponent } from './whiteboard/whiteboard.component';
+import {DragDropModule} from '@angular/cdk/drag-drop';
+import { StickyNoteComponent } from './whiteboard/sticky-note/sticky-note.component';
+import { OtherUserPositionComponent } from './whiteboard/other-user-position/other-user-position.component';
 
 
 
@@ -12,7 +16,10 @@ import { VideoTransferComponent } from './video-transfer/video-transfer.componen
   declarations: [
     TextTransferComponent,
     TransferContainerComponent,
-    VideoTransferComponent
+    VideoTransferComponent,
+    WhiteboardComponent,
+    StickyNoteComponent,
+    OtherUserPositionComponent
   ],
   exports: [
     TransferContainerComponent
@@ -20,6 +27,7 @@ import { VideoTransferComponent } from './video-transfer/video-transfer.componen
   imports: [
     CommonModule,
     TransferRoutingModule,
+    DragDropModule,
     ReactiveFormsModule
   ]
 })

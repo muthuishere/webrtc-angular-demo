@@ -4,11 +4,11 @@
   <div class="col-6">{{connectionStatus}}</div>
 </div>
 
-<div *ngIf="connectionStatus == 'connected'">
+<div *ngIf="connectionStatus == 'connected'" class="mt-3">
 
-  <hr/>
+
   <app-video-transfer  *ngIf="isMedia" ></app-video-transfer>
-  <hr/>
+
   <app-text-transfer  *ngIf="isData"></app-text-transfer>
 </div>
 </div>

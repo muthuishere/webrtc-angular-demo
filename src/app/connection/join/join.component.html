@@ -1,12 +1,16 @@
+<div *ngIf="showJoinAgain">
+  <button class="btn btn-primary" (click)="joinAgain()">Join Again</button>
 
-<form [formGroup]="connectionForm" >
+
+</div>
+
+<form [formGroup]="connectionForm" *ngIf="!showJoinAgain">
 
 
   <div class="mb-3">
 
 
-
-    <textarea class="form-control" rows="5" formControlName="offer" ></textarea>
+    <textarea class="form-control" rows="5" formControlName="offer"></textarea>
 
 
   </div>
@@ -14,23 +18,23 @@
   <div class="mb-3">
 
 
-    <button  class="btn btn-primary" (click)="onAcceptOffer()">Accept Offer</button>
-
+    <button class="btn btn-primary" (click)="onAcceptOffer()">Accept Offer</button>
 
 
   </div>
 
-  <div class="mb-3">
-    <button  class="btn btn-primary pull-right" (click)="createAnswer()">Create Answer</button>
+  <div *ngIf="canShowCreateAnswer">
+    <div class="mb-3">
+      <button class="btn btn-primary pull-right" (click)="createAnswer()">Create Answer</button>
+    </div>
+    <div class="mb-3">
+
+      <textarea class="form-control" rows="5" formControlName="answer" readonly="true"></textarea>
+
+    </div>
   </div>
-  <div class="mb-3">
 
-    <textarea class="form-control" rows="5" formControlName="answer" readonly="true"></textarea>
-
-  </div>
-
-
-    <app-transfer-container *ngIf="connection"></app-transfer-container>
+  <app-transfer-container *ngIf="connection"></app-transfer-container>
 
 
 </form>

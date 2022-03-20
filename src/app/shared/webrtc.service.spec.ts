@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { WebrtcConnectionService } from '../connection/services/webrtc-connection.service';
+import { WebrtcCreatorService } from '../connection/services/webrtc-creator.service';
 
 describe('WebrtcService', () => {
-  let service: WebrtcConnectionService;
+  let service: WebrtcCreatorService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(WebrtcConnectionService);
+    service = TestBed.inject(WebrtcCreatorService);
   });
 
   it('should be created', () => {

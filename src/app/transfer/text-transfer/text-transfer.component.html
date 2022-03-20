@@ -1,17 +1,40 @@
+<div class="card">
+  <div class="card-header">
+    Chat Room
+  </div>
+  <div class="card-body">
 
-<form [formGroup]="connectionForm" >
 
-  <div class="mb-3">
+    <form [formGroup]="transferForm" >
 
-    <input type="text" class="form-control" formControlName="message" placeholder="send message">
+      <div class="mb-3">
 
-    <textarea class="form-control" rows="5" formControlName="roomlogs" readonly="true"></textarea>
+        <div class="row mt-4">
+          <div class="col-12">
+<!--            <h5>Messages</h5>-->
+            <textarea class="form-control" rows="5" formControlName="roomlogs" readonly="true"></textarea>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="row">
+        <div class="col-11">
+          <input type="text" class="form-control" formControlName="message" placeholder="send message">
+
+        </div>
+        <div class="col-1">
+
+          <button type="submit" class="btn btn-primary pull-right" (click)="sendMessage()">Send</button>
+
+        </div>
+      </div>
+    </form>
 
   </div>
-  <div class="mb-3">
-    <button  class="btn btn-primary pull-right" (click)="sendMessage()">Send</button>
-  </div>
-</form>
+</div>
+
 
 
 
